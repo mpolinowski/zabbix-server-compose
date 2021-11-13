@@ -2,11 +2,25 @@
 
 # Zabbix Server 5.4
 
+<!-- TOC -->
+
+- [Docker Compose Setup](#docker-compose-setup)
+  - [Changes](#changes)
+- [UPDATE :: Zabbix Agent v2](#update--zabbix-agent-v2)
+- [What is Zabbix?](#what-is-zabbix)
+  - [Zabbix Dockerfiles](#zabbix-dockerfiles)
+    - [Base Docker Image](#base-docker-image)
+    - [Usage](#usage)
+  - [Issues and Wiki](#issues-and-wiki)
+  - [Contributing](#contributing)
+
+<!-- /TOC -->
+
 ## Docker Compose Setup
 
 This is a fork of the [official Zabbix Server Repo](https://github.com/zabbix/zabbix-docker) with a few changes for a production setup:
 
-**Changes**:
+### Changes
 
 1. Removed everything I don't need - this file only sets up the Zabbix Server with a Postgres backend, the Zabbix Server Dashboard frontend using NGINX and an Zabbix Agent 1 to monitor the server itself.
 2. Added container names, container restart policies and fixed IP addresses (The Zabbix Agent Container IP is set to `172.16.239.106` - **MAKE SURE** to change the agent address from default `127.0.0.1` to `172.16.239.106` inside the Server Dashboard! _see below_).
@@ -14,7 +28,52 @@ This is a fork of the [official Zabbix Server Repo](https://github.com/zabbix/za
 
 ![Zabbix Agent Configuration](./Zabbix_Agent_Configuration_01.png)
 
-# What is Zabbix?
+## UPDATE :: Zabbix Agent v2
+
+Using Zabbix Agent v2 (non-dockerized) for your Zabbix server:
+
+1. Comment out `zabbix-agent` in the docker-compose file.
+2. Install Agent 2:
+
+```bash
+wget https://repo.zabbix.com/zabbix/5.4/debian/pool/main/z/zabbix-release/zabbix-release_5.4-1%2Bdebian11_all.deb
+dpkg -i zabbix-release_5.4-1+debian11_all.deb
+apt update && apt install zabbix-agent2
+```
+
+3. [Configure Agent v2](https://mpolinowski.github.io/devnotes/devnotes/2020-07-16--zabbix-agent) - see [potential issue](https://mpolinowski.github.io/devnotes/2021-10-14--zabbix-docker-monitor):
+
+_/etc/zabbix/zabbix_agent2.conf_
+
+```conf
+# This is a configuration file for Zabbix agent 2 (Unix)
+PidFile=/var/run/zabbix/zabbix_agent2.pid
+LogFile=/var/log/zabbix/zabbix_agent2.log
+LogFileSize=100
+DebugLevel=3
+Server=172.16.238.101
+ListenPort=10050
+Hostname=zabbix_server
+Include=/etc/zabbix/zabbix_agent2.d/*.conf
+ControlSocket=/tmp/agent.sock
+TLSConnect=psk
+TLSAccept=psk
+TLSPSKIdentity=zabbix_server
+TLSPSKFile=/opt/zabbix/agent_tls.psk
+Plugins.Docker.Endpoint=unix:///var/run/docker.sock
+```
+
+Point your agent on your host system towards to docker container running the Zabbix server (see Docker-Compose file for IP, **default** = `172.16.238.101`). And generate the pre shared key in `/opt/zabbix/agent_tls.psk`:
+
+```bash
+openssl rand -hex 32 > /opt/zabbix/agent_tls.psk
+```
+
+The server now has to be pointed to the Zabbix Server WAN IP:
+
+![Zabbix Agent Configuration](./Zabbix_Agent_Configuration_02.png)
+
+## What is Zabbix?
 
 Zabbix is an enterprise-class open source distributed monitoring solution.
 
@@ -30,11 +89,11 @@ For more information and related downloads for Zabbix components, please visit h
 
 [![Nightly build images (DockerHub)](https://github.com/zabbix/zabbix-docker/actions/workflows/nightly_build.yml/badge.svg)](https://github.com/zabbix/zabbix-docker/actions/workflows/nightly_build.yml)
 
-## Zabbix Dockerfiles
+### Zabbix Dockerfiles
 
 This repository contains **Dockerfile** of [Zabbix](https://zabbix.com/) for [Docker](https://www.docker.com/)'s [automated build](https://registry.hub.docker.com/u/zabbix/) published to the public [Docker Hub Registry](https://registry.hub.docker.com/).
 
-### Base Docker Image
+#### Base Docker Image
 
 - [alpine](https://hub.docker.com/_/alpine/)
 - [centos](https://hub.docker.com/_/centos/) till Zabbix 5.0
@@ -43,7 +102,7 @@ This repository contains **Dockerfile** of [Zabbix](https://zabbix.com/) for [Do
 
 > **Important information: All Zabbix images based on CentOS 8 image can not be updated anymore because CentOS 8 base image is outdated (base image is not updated for half year). Because of that all images based on CentOS 8 replaced with Oracle Linux 8 as base image.**
 
-### Usage
+#### Usage
 
 There is some documentation and examples in the [official Zabbix Documentation](https://www.zabbix.com/documentation/current/manual/installation/containers)!
 
@@ -67,11 +126,11 @@ Please also follow usage instructions of each Zabbix component image:
 - [zabbix-web-service](https://hub.docker.com/r/zabbix/zabbix-web-service/) - Zabbix web service for performing various tasks using headless web browser (for example, reporting)
 - [zabbix-snmptraps](https://hub.docker.com/r/zabbix/zabbix-snmptraps/) - Additional container image for Zabbix server and Zabbix proxy to support SNMP traps
 
-## Issues and Wiki
+### Issues and Wiki
 
 Be sure to check [the Wiki-page](https://github.com/zabbix/zabbix-docker/wiki) on common problems and questions. If you still have problems with or questions about the images, please contact us through a [GitHub issue](https://github.com/zabbix/zabbix-docker/issues).
 
-## Contributing
+### Contributing
 
 You are invited to contribute new features, fixes, or updates, large or small; we are always thrilled to receive pull requests, and do our best to process them as fast as we can.
 
