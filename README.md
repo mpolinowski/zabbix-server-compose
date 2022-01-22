@@ -2,6 +2,16 @@
 
 ![logo](https://assets.zabbix.com/img/logo/zabbix_logo_500x131.png)
 
+
+This is a fork of the official Zabbix Server Repo with a few changes for a production setup:
+
+__Changes__
+
+1. Removed everything I don't need - this file only sets up the Zabbix Server with a Postgres backend, the Zabbix Server Dashboard frontend using NGINX and an Zabbix Agent 2 to monitor the server itself.
+2. Added container names, container restart policies and fixed IP addresses (The Zabbix Agent Container IP is set to `172.16.239.106` - MAKE SURE to change the agent address from default `127.0.0.1` to `172.16.239`.106 inside the Server Dashboard! see below).
+3. Added an additional external network ingress_gateway that will be used by the system ingress to direct traffic to Zabbix. The web frontend container opens both port 8080 and 8443 to debug the initial setup (SSL will be handled by the Ingress and is not configured on port 8443). The ports can be commented out later. Make sure to either remove the `ingress_gateway` from the configuration file or add it manually `docker network create ingress_gateway` before starting the containers.
+
+
 > This is the updated setup guide for __Zabbix Server v6__ via docker-compose. Version 6 is currently still under development and only available as a __Release Candidate__ `rc1`. For a setup guide for the stable __Version 5.4__ check the [5.4 README](/README_v5.4.md). Also note that the __docker_compose.yml__ file and __env_vars/.env_agent__ had to be modified for version 6.
 
 <!-- TOC -->
