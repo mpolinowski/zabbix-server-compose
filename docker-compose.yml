@@ -158,7 +158,7 @@ services:
 
   postgres-server:
     container_name: zabbix-db
-    image: postgres:13.4-alpine3.14
+    image: postgres:13.5-alpine3.15
     restart: unless-stopped
     volumes:
       - ./zbx_env/var/lib/postgresql/data:/var/lib/postgresql/data:rw
