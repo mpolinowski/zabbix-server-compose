@@ -152,7 +152,7 @@ services:
   #       memory: 64M
   #    mode: global
   #   env_file:
-  #    - ./env_vars/.env_agent
+  #    - ./env_vars/.env_agent_v5.4
   #   privileged: true
   #   pid: "host"
   #   networks:
