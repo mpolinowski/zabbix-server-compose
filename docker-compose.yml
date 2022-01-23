@@ -111,9 +111,9 @@ services:
         ipv4_address: 172.16.238.102
       ingress_gateway:
         aliases:
-          - zabbix-web-apache-pgsql
-          - zabbix-web-apache-alpine-pgsql
-          - zabbix-web-apache-pgsql-alpine
+          - zabbix-web-nginx-pgsql
+          - zabbix-web-nginx-alpine-pgsql
+          - zabbix-web-nginx-pgsql-alpine
     stop_grace_period: 10s
     labels:
       com.zabbix.description: "Zabbix frontend on Nginx web-server with PostgreSQL database support"
