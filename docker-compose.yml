@@ -179,6 +179,29 @@ services:
           - pgsql-server
           - pgsql-database
 
+  # grafana-server:
+  #   container_name: grafana-server
+  #   image: grafana/grafana-oss:latest
+  #   networks:
+  #     zbx_net_backend:
+  #       ipv4_address: 172.16.239.105
+  #       aliases:
+  #         - grafana-server
+  #     zbx_net_frontend:
+  #       ipv4_address: 172.16.238.105
+  #     ingress_gateway:
+  #       aliases:
+  #         - grafana-server
+  #   restart: always
+  #   ports:
+  #     - '3000:3000'
+  #   user: '472'
+  #   volumes:
+  #     - './grafana/lib:/var/lib/grafana'
+  #     - './grafana/log:/var/log/grafana'
+  #   environment:
+  #     GF_INSTALL_PLUGINS: alexanderzobnin-zabbix-app
+
 networks:
   zbx_net_frontend:
     driver: bridge
