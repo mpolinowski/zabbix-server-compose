@@ -13,7 +13,7 @@ __Changes__
 4. __OPTIONAL__: Added Grafana dashboard. See [Blog Entry for details](https://mpolinowski.github.io/devnotes/2022-01-15--zabbix-grafana-dashboard). The Grafana container is commented out in the docker-compose file - add as required.
 
 
-> This is the updated setup guide for __Zabbix Server v6__ via docker-compose. Version 6 is currently still under development and only available as a __Release Candidate__ `rc1`. For a setup guide for the stable __Version 5.4__ check the [5.4 README](/README_v5.4.md). Also note that the __docker_compose.yml__ file and __env_vars/.env_agent__ had to be modified for version 6.
+> This is the updated setup guide for __Zabbix Server v6 LTS__ via docker-compose. For a setup guide for the __Version 5.4__ check the [5.4 README](/README_v5.4.md). Also note that the __docker_compose.yml__ file and __env_vars/.env_agent__ had to be modified for version 6.
 
 <!-- TOC -->
 
